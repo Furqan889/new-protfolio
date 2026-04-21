@@ -1,1 +1,330 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Muhammad Aqib</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #0a0a0f; }
+        .tab-active { background: linear-gradient(135deg, #00d4ff, #7b2cbf); color: white; }
+        .tab-btn:hover:not(.tab-active) { background: rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
+                <i class="fas fa-crown mr-2"></i>Admin Dashboard
+            </div>
+            <div class="flex gap-4">
+                <a href="/" class="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all">
+                    <i class="fas fa-globe mr-2"></i>View Site
+                </a>
+                <a href="/admin/logout" class="px-4 py-2 bg-red-500/20 border border-red-500 rounded-lg hover:bg-red-500/30 transition-all">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-24 px-6 pb-12 max-w-7xl mx-auto">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:border-cyan-400 transition-all">
+                <div class="text-2xl font-bold text-cyan-400">{{ messages|length }}</div>
+                <div class="text-sm text-white/60"><i class="fas fa-envelope mr-1"></i>Messages</div>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:border-cyan-400 transition-all">
+                <div class="text-2xl font-bold text-cyan-400">{{ projects|length }}</div>
+                <div class="text-sm text-white/60"><i class="fas fa-folder mr-1"></i>Projects</div>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:border-cyan-400 transition-all">
+                <div class="text-2xl font-bold text-cyan-400">{{ skills|length }}</div>
+                <div class="text-sm text-white/60"><i class="fas fa-code mr-1"></i>Skills</div>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:border-cyan-400 transition-all">
+                <div class="text-2xl font-bold text-cyan-400">{{ awards|length }}</div>
+                <div class="text-sm text-white/60"><i class="fas fa-trophy mr-1"></i>Awards</div>
+            </div>
+            <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:border-cyan-400 transition-all">
+                <div class="text-2xl font-bold text-cyan-400">{{ accomplishments|length }}</div>
+                <div class="text-sm text-white/60"><i class="fas fa-star mr-1"></i>Accomplishments</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex flex-wrap gap-2 mb-6 border-b border-white/10 pb-2">
+            <button onclick="showTab('messages')" class="tab-btn px-6 py-2 rounded-lg transition-all" id="tab-messages">
+                <i class="fas fa-envelope mr-2"></i>Messages ({{ messages|length }})
+            </button>
+            <button onclick="showTab('projects')" class="tab-btn px-6 py-2 rounded-lg transition-all" id="tab-projects">
+                <i class="fas fa-folder mr-2"></i>Projects ({{ projects|length }})
+            </button>
+            <button onclick="showTab('skills')" class="tab-btn px-6 py-2 rounded-lg transition-all" id="tab-skills">
+                <i class="fas fa-code mr-2"></i>Skills ({{ skills|length }})
+            </button>
+            <button onclick="showTab('awards')" class="tab-btn px-6 py-2 rounded-lg transition-all" id="tab-awards">
+                <i class="fas fa-trophy mr-2"></i>Awards ({{ awards|length }})
+            </button>
+            <button onclick="showTab('accomplishments')" class="tab-btn px-6 py-2 rounded-lg transition-all" id="tab-accomplishments">
+                <i class="fas fa-star mr-2"></i>Accomplishments ({{ accomplishments|length }})
+            </button>
+        </div>
+
+        <!-- ==================== MESSAGES TAB ==================== -->
+        <div id="messages-tab" class="tab-content">
+            <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+                <div class="p-6 border-b border-white/10 bg-gradient-to-r from-cyan-500/10 to-transparent">
+                    <h2 class="text-xl font-bold"><i class="fas fa-inbox mr-2 text-cyan-400"></i>Contact Messages</h2>
+                    <p class="text-white/50 text-sm mt-1">Messages sent from the portfolio contact form</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-white/5">
+                            <tr>
+                                <th class="p-3 text-left">ID</th>
+                                <th class="p-3 text-left">Name</th>
+                                <th class="p-3 text-left">Email</th>
+                                <th class="p-3 text-left">Message</th>
+                                <th class="p-3 text-left">Date</th>
+                                <th class="p-3 text-left">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for msg in messages %}
+                            <tr class="border-t border-white/5 hover:bg-white/5 transition-all">
+                                <td class="p-3">{{ msg.id }}</td>
+                                <td class="p-3 font-medium">{{ msg.name }}</td>
+                                <td class="p-3 text-white/60">{{ msg.email or '-' }}</td>
+                                <td class="p-3 text-white/70 max-w-md truncate">{{ msg.message[:80] }}...</td>
+                                <td class="p-3 text-white/50 text-sm">{{ msg.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td class="p-3">
+                                    <a href="/admin/message/delete/{{ msg.id }}" onclick="return confirm('Delete this message?')" class="text-red-400 hover:text-red-300 transition-all">
+                                        <i class="fas fa-trash-alt"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="p-8 text-center text-white/40">
+                                    <i class="fas fa-inbox text-4xl mb-3 block"></i>
+                                    No messages yet
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== PROJECTS TAB ==================== -->
+        <div id="projects-tab" class="tab-content hidden">
+            <!-- Add Project Form -->
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
+                <h3 class="text-lg font-bold mb-4"><i class="fas fa-plus-circle text-cyan-400 mr-2"></i>Add New Project</h3>
+                <form action="/admin/project/add" method="POST" class="grid md:grid-cols-2 gap-4">
+                    <input type="text" name="title" placeholder="Project Title" required class="px-4 py-2 bg-black/50 border border-white/10 rounded-lg focus:border-cyan-400 focus:outline-none">
+                    <input type="text" name="icon" placeholder="Icon (e.g., fa-shield-alt)" value="fa-microchip" class="px-4 py-2 bg-black/50 border border-white/10 rounded-lg focus:border-cyan-400 focus:outline-none">
+                    <textarea name="description" placeholder="Description" required class="md:col-span-2 px-4 py-2 bg-black/50 border border-white/10 rounded-lg focus:border-cyan-400 focus:outline-none" rows="3"></textarea>
+                    <input type="text" name="tags" placeholder="Tags (comma separated, e.g., AI,Robotics,Defense)" class="md:col-span-2 px-4 py-2 bg-black/50 border border-white/10 rounded-lg focus:border-cyan-400 focus:outline-none">
+                    <button type="submit" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-2 rounded-lg font-bold hover:opacity-90 transition-all">
+                        <i class="fas fa-plus mr-2"></i>Add Project
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Projects List -->
+            <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+                <div class="p-4 border-b border-white/10 bg-gradient-to-r from-cyan-500/10 to-transparent">
+                    <h3 class="font-bold"><i class="fas fa-list mr-2 text-cyan-400"></i>All Projects</h3>
+                </div>
+                {% for project in projects %}
+                <div class="flex justify-between items-center p-4 border-b border-white/5 hover:bg-white/5 transition-all">
+                    <div class="flex-1">
+                        <div><i class="fas {{ project.icon }} text-cyan-400 mr-2 w-6"></i><strong>{{ project.title }}</strong></div>
+                        <p class="text-sm text-white/60 ml-8">{{ project.description[:100] }}...</p>
+                        {% if project.tags %}
+                        <div class="flex gap-1 ml-8 mt-1">
+                            {% for tag in project.tags.split(',')[:2] %}
+                            <span class="text-xs text-cyan-400/60">{{ tag.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <a href="/admin/project/delete/{{ project.id }}" onclick="return confirm('Delete this project?')" class="text-red-400 hover:text-red-300 ml-4">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+                {% else %}
+                <div class="p-8 text-center text-white/40">No projects yet. Add your first project above!</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ==================== SKILLS TAB ==================== -->
+        <div id="skills-tab" class="tab-content hidden">
+            <!-- Add Skill Form -->
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
+                <h3 class="text-lg font-bold mb-4"><i class="fas fa-plus-circle text-cyan-400 mr-2"></i>Add New Skill</h3>
+                <form action="/admin/skill/add" method="POST" class="grid md:grid-cols-3 gap-4">
+                    <input type="text" name="name" placeholder="Skill Name" required class="px-4 py-2 bg-black/50 border border-white/10 rounded-lg focus:border-cyan-400 focus:outline-none">
+                    <input type="number" name="percentage" placeholder="Percentage (0-100)" required class="px-4 py-2 bg-black/50 border border-white/10 rounded-lg focus:border-cyan-400 focus:outline-none">
+                    <select name="category" class="px-4 py-2 bg-black/50 border border-white/10 rounded-lg focus:border-cyan-400 focus:outline-none">
+                        <option value="technical">Technical Skill</option>
+                        <option value="education">Education</option>
+                    </select>
+                    <button type="submit" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-2 rounded-lg font-bold hover:opacity-90 transition-all md:col-span-3">
+                        <i class="fas fa-plus mr-2"></i>Add Skill
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Skills List -->
+            <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+                <div class="p-4 border-b border-white/10 bg-gradient-to-r from-cyan-500/10 to-transparent">
+                    <h3 class="font-bold"><i class="fas fa-list mr-2 text-cyan-400"></i>All Skills</h3>
+                </div>
+                {% for skill in skills %}
+                <div class="flex justify-between items-center p-4 border-b border-white/5 hover:bg-white/5 transition-all">
+                    <div>
+                        <strong>{{ skill.name }}</strong>
+                        <span class="text-cyan-400 ml-2">{{ skill.percentage }}%</span>
+                        <span class="text-xs text-white/40 ml-2 px-2 py-1 bg-white/5 rounded-full">{{ skill.category }}</span>
+                    </div>
+                    <a href="/admin/skill/delete/{{ skill.id }}" onclick="return confirm('Delete this skill?')" class="text-red-400 hover:text-red-300">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+                {% else %}
+                <div class="p-8 text-center text-white/40">No skills yet. Add your first skill above!</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ==================== AWARDS TAB ==================== -->
+        <div id="awards-tab" class="tab-content hidden">
+            <!-- Add Award Form -->
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
+                <h3 class="text-lg font-bold mb-4"><i class="fas fa-plus-circle text-cyan-400 mr-2"></i>Add New Award</h3>
+                <form action="/admin/award/add" method="POST" class="grid md:grid-cols-2 gap-4">
+                    <input type="text" name="title" placeholder="Award Title" required class="px-4 py-2 bg-black/50 border border-white/10 rounded-lg focus:border-cyan-400 focus:outline-none">
+                    <input type="text" name="organization" placeholder="Organization" required class="px-4 py-2 bg-black/50 border border-white/10 rounded-lg focus:border-cyan-400 focus:outline-none">
+                    <input type="text" name="icon" placeholder="Icon (e.g., fa-trophy, fa-medal, fa-star)" value="fa-trophy" class="px-4 py-2 bg-black/50 border border-white/10 rounded-lg focus:border-cyan-400 focus:outline-none">
+                    <button type="submit" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-2 rounded-lg font-bold hover:opacity-90 transition-all">
+                        <i class="fas fa-plus mr-2"></i>Add Award
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Awards List -->
+            <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+                <div class="p-4 border-b border-white/10 bg-gradient-to-r from-cyan-500/10 to-transparent">
+                    <h3 class="font-bold"><i class="fas fa-list mr-2 text-cyan-400"></i>All Awards</h3>
+                </div>
+                {% for award in awards %}
+                <div class="flex justify-between items-center p-4 border-b border-white/5 hover:bg-white/5 transition-all">
+                    <div>
+                        <i class="fas {{ award.icon }} text-yellow-400 mr-2 w-6"></i>
+                        <strong>{{ award.title }}</strong>
+                        <p class="text-sm text-white/60 ml-8">{{ award.organization }}</p>
+                    </div>
+                    <a href="/admin/award/delete/{{ award.id }}" onclick="return confirm('Delete this award?')" class="text-red-400 hover:text-red-300">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+                {% else %}
+                <div class="p-8 text-center text-white/40">No awards yet. Add your first award above!</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- ==================== ACCOMPLISHMENTS TAB ==================== -->
+        <div id="accomplishments-tab" class="tab-content hidden">
+            <!-- Add Accomplishment Form -->
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
+                <h3 class="text-lg font-bold mb-4"><i class="fas fa-plus-circle text-cyan-400 mr-2"></i>Add New Accomplishment</h3>
+                <form action="/admin/accomplishment/add" method="POST" class="grid md:grid-cols-2 gap-4">
+                    <input type="text" name="title" placeholder="Title" required class="px-4 py-2 bg-black/50 border border-white/10 rounded-lg focus:border-cyan-400 focus:outline-none">
+                    <input type="text" name="description" placeholder="Description (e.g., Winner - Event Name)" class="px-4 py-2 bg-black/50 border border-white/10 rounded-lg focus:border-cyan-400 focus:outline-none">
+                    <input type="text" name="icon" placeholder="Icon (e.g., fa-star, fa-egg, fa-robot)" value="fa-star" class="px-4 py-2 bg-black/50 border border-white/10 rounded-lg focus:border-cyan-400 focus:outline-none">
+                    <button type="submit" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-2 rounded-lg font-bold hover:opacity-90 transition-all">
+                        <i class="fas fa-plus mr-2"></i>Add Accomplishment
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Accomplishments List -->
+            <div class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+                <div class="p-4 border-b border-white/10 bg-gradient-to-r from-cyan-500/10 to-transparent">
+                    <h3 class="font-bold"><i class="fas fa-list mr-2 text-cyan-400"></i>All Accomplishments</h3>
+                </div>
+                {% for item in accomplishments %}
+                <div class="flex justify-between items-center p-4 border-b border-white/5 hover:bg-white/5 transition-all">
+                    <div>
+                        <i class="fas {{ item.icon }} text-green-400 mr-2 w-6"></i>
+                        <strong>{{ item.title }}</strong>
+                        {% if item.description %}
+                        <p class="text-sm text-white/60 ml-8">{{ item.description }}</p>
+                        {% endif %}
+                    </div>
+                    <a href="/admin/accomplishment/delete/{{ item.id }}" onclick="return confirm('Delete this accomplishment?')" class="text-red-400 hover:text-red-300">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+                {% else %}
+                <div class="p-8 text-center text-white/40">No accomplishments yet. Add your first accomplishment above!</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active');
+                btn.classList.remove('bg-gradient-to-r', 'from-cyan-500', 'to-purple-600', 'text-white');
+                btn.classList.add('bg-white/5', 'text-white/70');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            
+            // Add active class to clicked button
+            const activeBtn = document.getElementById('tab-' + tabName);
+            activeBtn.classList.add('tab-active');
+            activeBtn.classList.remove('bg-white/5', 'text-white/70');
+            activeBtn.classList.add('bg-gradient-to-r', 'from-cyan-500', 'to-purple-600', 'text-white');
+        }
+        
+        // Check which tab to show based on URL hash
+        function getInitialTab() {
+            const hash = window.location.hash;
+            if (hash === '#projects') return 'projects';
+            if (hash === '#skills') return 'skills';
+            if (hash === '#awards') return 'awards';
+            if (hash === '#accomplishments') return 'accomplishments';
+            return 'messages';
+        }
+        
+        // Show initial tab
+        showTab(getInitialTab());
+        
+        // Auto-hide flash messages
+        setTimeout(() => {
+            const flashMsg = document.querySelector('.fixed.bottom-4');
+            if (flashMsg) flashMsg.style.display = 'none';
+        }, 5000);
+    </script>
+</body>
+</html>
